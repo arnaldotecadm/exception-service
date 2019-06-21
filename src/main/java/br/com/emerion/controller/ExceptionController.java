@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -47,6 +48,21 @@ public class ExceptionController {
 	@GetMapping(path = "/all")
 	public List<ExceptionModel> getAll() {
 		return service.getAll();
+	}
+
+	@GetMapping(path = "/filter/byField/unit_name/{unitName}")
+	public List<ExceptionModel> getByUnit(@PathVariable("unitName") String unitName) {
+		return service.getExceptionByUnitName(unitName);
+	}
+
+	@GetMapping(path = "/filter/byField/class_name/{className}")
+	public List<ExceptionModel> getByClass(@PathVariable("className") String className) {
+		return service.getExceptionByClassName(className);
+	}
+
+	@GetMapping(path = "/filter/byField/component_name/{componentName}")
+	public List<ExceptionModel> getByComponent(@PathVariable("componentName") String componentName) {
+		return service.getExceptionByComponentName(componentName);
 	}
 
 	@PostMapping(path = "/add")

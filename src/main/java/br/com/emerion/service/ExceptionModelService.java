@@ -21,4 +21,16 @@ public class ExceptionModelService {
 	public ExceptionModel save(ExceptionModel exceptionModel) {
 		return repository.save(exceptionModel);
 	}
+	
+	public List<ExceptionModel> getExceptionByUnitName(String unitName){
+		return repository.findExceptionByUnitName(unitName);
+	}
+	
+	public List<ExceptionModel> getExceptionByClassName(String className){
+		return repository.findExceptionByClassName(className);
+	}
+	
+	public List<ExceptionModel> getExceptionByComponentName(String componentName){
+		return repository.findExceptionByComponentName(componentName);
+	}
 }
