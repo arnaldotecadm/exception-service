@@ -50,6 +50,11 @@ public class ExceptionController {
 		return service.getAll();
 	}
 
+	@GetMapping(path = "/filter/byField/id/{id}")
+	public ExceptionModel getById(@PathVariable("id") Integer id) {
+		return service.getExceptionById(id);
+	}
+
 	@GetMapping(path = "/filter/byField/unit_name/{unitName}")
 	public List<ExceptionModel> getByUnit(@PathVariable("unitName") String unitName) {
 		return service.getExceptionByUnitName(unitName);
@@ -63,6 +68,38 @@ public class ExceptionController {
 	@GetMapping(path = "/filter/byField/component_name/{componentName}")
 	public List<ExceptionModel> getByComponent(@PathVariable("componentName") String componentName) {
 		return service.getExceptionByComponentName(componentName);
+	}
+
+	@GetMapping(path = "/filter/byField/important_line/{importantLine}")
+	public List<ExceptionModel> getByImportantLine(@PathVariable("importantLine") String importantLine) {
+		return service.getExceptionByImportantLine(importantLine);
+	}
+
+	@GetMapping(path = "/filter/byField/detail/{detail}")
+	public List<ExceptionModel> getByDetail(@PathVariable("detail") String detail) {
+		return service.getExceptionByDetail(detail);
+	}
+
+	@GetMapping(path = "/filter/byField/version_name/{versionName}")
+	public List<ExceptionModel> getByVersionName(@PathVariable("versionName") String versionName) {
+		return service.getExceptionByVersionName(versionName);
+	}
+
+	@GetMapping(path = "/filter/byField/aplicacao/{aplicacao}")
+	public List<ExceptionModel> getByAplicacao(@PathVariable("aplicacao") String aplicacao) {
+
+		try {
+			UUID uuid = UUID.fromString(aplicacao);
+			return service.getExceptionByAplicacao(uuid);
+		} catch (Exception e) {
+			return null;
+		}
+
+	}
+
+	@GetMapping(path = "/filter/byField/version_type/{versionType}")
+	public List<ExceptionModel> getByVersionType(@PathVariable("versionType") String versionType) {
+		return service.getExceptionByVersionType(versionType);
 	}
 
 	@PostMapping(path = "/add")
