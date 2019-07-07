@@ -19,17 +19,16 @@ import br.com.emerion.model.ExceptionModel;
 @EnableAutoConfiguration
 @EntityScan(basePackageClasses = ExceptionModel.class)
 @RestController
-public class Application{
-//	public class Application extends SpringBootServletInitializer {
+public class Application extends SpringBootServletInitializer {
 
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
 	}
 
-//	@Override
-//	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-//		return application.sources(Application.class);
-//	}
+	@Override
+	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+		return application.sources(Application.class);
+	}
 
 	@Bean
 	public Filter characterEncodingFilterSpring() {

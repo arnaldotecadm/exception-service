@@ -9,10 +9,10 @@ public enum EnumException {
 	ITEM_CREATED(HttpStatus.CREATED, "Item inserido com sucesso."),
 	COMPANY_NOT_FOUND(HttpStatus.FORBIDDEN, "Institui√ß√£o n√£o informada."),
 	
-	VERSION_FIELD_NOT_INFORMED(HttpStatus.FORBIDDEN, "Vers„o n„o informada"),
-	UUID_FIELD_NOT_INFORMED(HttpStatus.FORBIDDEN, "Sistema n„o informado"),
-	VERSION_TYPE_FIELD_NOT_INFORMED(HttpStatus.FORBIDDEN, "Tipo de Vers„o n„o informada"),
-	VERSION_TYPE_NOT_VALID(HttpStatus.FORBIDDEN, "Tipo de vers„o informada n„o È valido");
+	VERSION_FIELD_NOT_INFORMED(HttpStatus.FORBIDDEN, "Vers√£o n√£o informada"),
+	UUID_FIELD_NOT_INFORMED(HttpStatus.FORBIDDEN, "Sistema n√£o informado"),
+	VERSION_TYPE_FIELD_NOT_INFORMED(HttpStatus.FORBIDDEN, "Tipo de Vers√£o n√£o informada"),
+	VERSION_TYPE_NOT_VALID(HttpStatus.FORBIDDEN, "Tipo de vers√£o informada n√£o √© valido");
 
 	private HttpStatus httpStatus;
 	private String description;

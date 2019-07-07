@@ -21,7 +21,7 @@ public class GlobalControllerExceptionHandler {
 		logger.error(ex);
 		if (ex.getMessage().contains("No enum constant")) {
 			return new ResponseEntity<>(
-					"Valor informado para o par‚metro n„o compatÌvel com o valor informado, por favor consulte a documentaÁ„o para maiores detalhes.",
+					"Valor informado para o par√¢metro n√£o compat√≠vel com o valor informado, por favor consulte a documenta√ß√£o para maiores detalhes.",
 					HttpStatus.BAD_REQUEST);
 		}
 

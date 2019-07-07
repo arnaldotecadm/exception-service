@@ -4,24 +4,24 @@ import org.springframework.http.HttpStatus;
 
 public enum EnumVersionException {
 	
-	VERSAO_JA_EXISTENTE(HttpStatus.CONFLICT, "Vers„o informada j· existente. Por favor informar uma vers„o diferente."), 
-	VERSAO_INFORMADA_INCORRETAMENTE(HttpStatus.BAD_REQUEST, "N„o foi possÌvel recuperar a vers„o. Por favor informar a vers„o no formato: \"9.9.9.9\""), 
-	INFORMAR_ARQUIVO_DOWNLOAD(HttpStatus.BAD_REQUEST, "Se o download n„o for se referir ‡ vers„o completa, por favor especificar o arquivo a ser baixado."),
-	ARQUIVO_NAO_ENCONTRADO(HttpStatus.NOT_FOUND, "Erro ao tentar processar requisiÁ„o; Recurso n„o encontrado"),
+	VERSAO_JA_EXISTENTE(HttpStatus.CONFLICT, "Vers√£o informada j√° existente. Por favor informar uma vers√£o diferente."), 
+	VERSAO_INFORMADA_INCORRETAMENTE(HttpStatus.BAD_REQUEST, "N√£o foi poss√≠vel recuperar a vers√£o. Por favor informar a vers√£o no formato: \"9.9.9.9\""), 
+	INFORMAR_ARQUIVO_DOWNLOAD(HttpStatus.BAD_REQUEST, "Se o download n√£o for se referir √† vers√£o completa, por favor especificar o arquivo a ser baixado."),
+	ARQUIVO_NAO_ENCONTRADO(HttpStatus.NOT_FOUND, "Erro ao tentar processar requisi√ß√£o; Recurso n√£o encontrado"),
 	
-	MANIFESTO_MAL_FORMATADO(HttpStatus.NOT_FOUND, "Erro converter o arquivo de MANIFESTO. Arquivo mal formatado, por favor consutar o manual para maiores detalhes sobre formataÁ„o"),
-	MANIFESTO_INFORMADO_INCORRETAMENTE(HttpStatus.NOT_FOUND, "Erro converter o arquivo de MANIFESTO. Arquivo informado n„o condiz com arquivos enviados."),
+	MANIFESTO_MAL_FORMATADO(HttpStatus.NOT_FOUND, "Erro converter o arquivo de MANIFESTO. Arquivo mal formatado, por favor consutar o manual para maiores detalhes sobre formata√ß√£o"),
+	MANIFESTO_INFORMADO_INCORRETAMENTE(HttpStatus.NOT_FOUND, "Erro converter o arquivo de MANIFESTO. Arquivo informado n√£o condiz com arquivos enviados."),
 	
-	NUMERO_MAXIMO_ARQUIVOS(HttpStatus.METHOD_NOT_ALLOWED, "O serviÁo pode receber no m·ximo dois scripts. Leia o manual para maiores detalhes."),
+	NUMERO_MAXIMO_ARQUIVOS(HttpStatus.METHOD_NOT_ALLOWED, "O servi√ßo pode receber no m√°ximo dois scripts. Leia o manual para maiores detalhes."),
 	
-	ERRO_DESCONHECIDO(HttpStatus.INTERNAL_SERVER_ERROR, "Erro ao tentar processar a requisiÁ„o. Motivo desconhecido"), 
+	ERRO_DESCONHECIDO(HttpStatus.INTERNAL_SERVER_ERROR, "Erro ao tentar processar a requisi√ß√£o. Motivo desconhecido"), 
 	
-	NENHUM_ARQUIVO_ADICIONADO(HttpStatus.METHOD_NOT_ALLOWED, "Nenhum arquivo foi adicionado para atualizaÁ„o. Por favor verifique"), 
-	SCRIPT_ALREADY_REGISTERED(HttpStatus.BAD_REQUEST,"Arquivo de script com o mesmo nome j· enviado anteriormente para o mesmo tipo de vers„o."), 
+	NENHUM_ARQUIVO_ADICIONADO(HttpStatus.METHOD_NOT_ALLOWED, "Nenhum arquivo foi adicionado para atualiza√ß√£o. Por favor verifique"), 
+	SCRIPT_ALREADY_REGISTERED(HttpStatus.BAD_REQUEST,"Arquivo de script com o mesmo nome j√° enviado anteriormente para o mesmo tipo de vers√£o."), 
 	
-	SCRIPT_TYPE_NOT_ACCEPTABLE(HttpStatus.BAD_REQUEST, "Tipo de arquivo SQL n„o È aceito, favor enviar os scripts de banco no formato SQL"),
+	SCRIPT_TYPE_NOT_ACCEPTABLE(HttpStatus.BAD_REQUEST, "Tipo de arquivo SQL n√£o √© aceito, favor enviar os scripts de banco no formato SQL"),
 	
-	APP_TYPE_NOT_ACCEPTABLE(HttpStatus.BAD_REQUEST, "Tipo de AplicaÁ„o n„o È aceito, favor enviar apenas execut·veis");
+	APP_TYPE_NOT_ACCEPTABLE(HttpStatus.BAD_REQUEST, "Tipo de Aplica√ß√£o n√£o √© aceito, favor enviar apenas execut√°veis");
 	
 	private final String label;
 	private HttpStatus httpStatus;

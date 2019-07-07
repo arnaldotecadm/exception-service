@@ -1,10 +1,10 @@
 package br.com.emerion.enums;
 
 public enum EnumTipoVersao {
-	DESENVOLVIMENTO("Ambiente de desenvolvimento da aplicaÁ„o, sujeito a todos os tipos de bugs."),
-	SNAPSHOT("Ambiente um pouco mais est·vel, geralmente pela equipe de testes."),
-	HOMOLOGACAO("Ambiente est·vel, j· tendo passado por testes. Serve como uma vers„o de validaÁ„o e para a realizaÁ„o de testes mais rigorosos(Estresse, Carga, etc)."),
-	PRODUCAO("Ambiente seguro e livre de erros. Pelo menos teÛricamente.");
+	DESENVOLVIMENTO("Ambiente de desenvolvimento da aplica√ß√£o, sujeito a todos os tipos de bugs."),
+	SNAPSHOT("Ambiente um pouco mais est√°vel, geralmente pela equipe de testes."),
+	HOMOLOGACAO("Ambiente est√°vel, j√° tendo passado por testes. Serve como uma vers√£o de valida√ß√£o e para a realiza√ß√£o de testes mais rigorosos(Estresse, Carga, etc)."),
+	PRODUCAO("Ambiente seguro e livre de erros. Pelo menos te√≥ricamente.");
 
 	private final String label;
 
