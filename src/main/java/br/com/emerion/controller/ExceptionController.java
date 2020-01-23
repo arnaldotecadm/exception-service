@@ -18,7 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.emerion.converter.ConverterFactory;
@@ -85,6 +87,15 @@ public class ExceptionController {
 	@GetMapping(path = "/filter/byField/version_name/{versionName}")
 	public List<ExceptionModel> getByVersionName(@PathVariable("versionName") String versionName) {
 		return service.getExceptionByVersionName(versionName);
+	}
+	
+	@GetMapping(path = "/filter/general", consumes = "application/json")
+	public List<ExceptionModel> getByGeneralFields(@RequestParam("object") String json) throws JsonParseException, JsonMappingException, IOException {
+		ExceptionModel model = new ExceptionModel();
+		ObjectMapper mapper = new ObjectMapper();
+	    model = mapper.readValue(json, ExceptionModel.class);
+	    
+		return service.getExceptionByGeneralFilter(model);
 	}
 
 	@GetMapping(path = "/filter/byField/aplicacao/{aplicacao}")
