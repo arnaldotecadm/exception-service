@@ -21,7 +21,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @Entity(name = "exception_management")
-public class ExceptionModel implements Serializable {
+public class ExceptionModel implements Serializable, Comparable<ExceptionModel> {
 
 	/**
 	 * 
@@ -46,6 +46,7 @@ public class ExceptionModel implements Serializable {
 	@Column(name = "user_name")
 	private String userName;
 
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -70,6 +71,11 @@ public class ExceptionModel implements Serializable {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public int compareTo(ExceptionModel exceptionModel) {
+		return this.getId().compareTo(exceptionModel.getId());
 	}
 
 }

@@ -1,5 +1,6 @@
 package br.com.emerion.service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,7 +27,13 @@ public class ExceptionModelService {
 	}
 
 	public List<ExceptionModel> getAll() {
-		return (List<ExceptionModel>) repository.findAll();
+		List<ExceptionModel> exceptionsList = (List<ExceptionModel>) repository.findAll();
+		Collections.sort(exceptionsList);
+
+		Collections.sort(exceptionsList, Collections.reverseOrder());
+		;
+
+		return exceptionsList;
 	}
 
 	public ExceptionModel save(ExceptionModel exceptionModel) {
