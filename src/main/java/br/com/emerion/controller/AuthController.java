@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -58,12 +59,14 @@ public class AuthController {
 
 	public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
 
+	@ApiOperation(value = "Ping para resposta do Servidor")
 	@GetMapping(value = "/ping", produces = "application/json")
 	@ResponseBody
 	public String hi() {
 		return "ok.";
 	}
 
+	@ApiOperation(value = "Logar no sistema de exceções e recuperar um token JWT válido.")
 	@PostMapping(value = "login")
 	public ResponseEntity<String> checkPermission(@RequestParam("userName") String userName,
 			@RequestParam("password") String password, @RequestParam("publicKey") String publicKey)

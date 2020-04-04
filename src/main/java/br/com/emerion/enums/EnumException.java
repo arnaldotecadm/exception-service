@@ -14,6 +14,7 @@ public enum EnumException {
 	UUID_MALFORMED(HttpStatus.FORBIDDEN, "Campo \"application\" informado incorretamente"),
 	VERSION_TYPE_FIELD_NOT_INFORMED(HttpStatus.FORBIDDEN, "Campo \"tipo_versao\" não informado"),
 	VERSION_TYPE_NOT_VALID(HttpStatus.FORBIDDEN, "Tipo de versão informada não é valido"),
+	EXCEPTION_SEVERITY(HttpStatus.FORBIDDEN, "Gravidade da exceção informada não é valido"),
 	STACKTRACE_FIELD_NOT_INFORMED(HttpStatus.FORBIDDEN, "Campo \"stack_trace\" não informado"),
 	MESSAGE_FIELD_NOT_INFORMED(HttpStatus.FORBIDDEN, "Campo \"message\" não informado"),
 	USER_NAME_FIELD_NOT_INFORMED(HttpStatus.FORBIDDEN, "Campo \"user_name\" não informado");

@@ -1,6 +1,7 @@
 package br.com.emerion.model;
 
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -8,7 +9,12 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
+import br.com.emerion.enums.EnumExceptionSeverity;
+import br.com.emerion.enums.EnumTipoVersao;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,23 +36,46 @@ public class ExceptionModel implements Serializable, Comparable<ExceptionModel> 
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@ApiModelProperty(hidden = true)
 	private Integer id;
 
-	@Column(name = "message")
+	@Column(columnDefinition = "TEXT", name = "message")
 	private String message;
 
 	@Column(columnDefinition = "TEXT", name = "stack_trace")
+	@ApiModelProperty(name = "stack_trace")
 	private String stackTrace;
 
 	private UUID aplicacao;
 
 	@Column(name = "tipo_versao")
+	@ApiModelProperty(allowableValues = EnumTipoVersao.ENUMERADO_SWAGGER, name = "tipo_versao")
 	private String versionType;
+
+	@Column(name = "numero_versao")
+	private String numerVersao;
 
 	@Column(name = "user_name")
 	private String userName;
 
-	
+	@Column(name = "classe_excecao")
+	private String classExcecao;
+
+	@Column(columnDefinition = "TEXT", name = "wiki_how")
+	@ApiModelProperty(value = "Se disponível, informar neste campo uma possível maneira de solucionar o problema")
+	private String wikiHow;
+
+	@ApiModelProperty(allowableValues = EnumExceptionSeverity.ENUMERADO_SWAGGER)
+	private String serverity;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@ApiModelProperty(hidden = true)
+	private Calendar dataExcecao = Calendar.getInstance();
+
+	@Column(name = "campo_controle")
+	@ApiModelProperty(value = "Campo de controle por parte do usuario, campo de digitação livre apenas para controles internos.")
+	private String campoControle;
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

@@ -1,5 +1,8 @@
 package br.com.emerion.enums;
 
+import io.swagger.annotations.ApiModel;
+
+@ApiModel
 public enum EnumTipoVersao {
 	DESENVOLVIMENTO("Ambiente de desenvolvimento da aplicação, sujeito a todos os tipos de bugs."),
 	SNAPSHOT("Ambiente um pouco mais estável, geralmente pela equipe de testes."),
@@ -15,4 +18,7 @@ public enum EnumTipoVersao {
 	public String getLabel() {
 		return this.label;
 	}
+	
+	public static final String ENUMERADO_SWAGGER = "DESENVOLVIMENTO, SNAPSHOT, HOMOLOGACAO, PRODUCAO";
+	
 }

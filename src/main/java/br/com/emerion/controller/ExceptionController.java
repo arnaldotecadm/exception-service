@@ -2,13 +2,12 @@ package br.com.emerion.controller;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,10 +22,12 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.emerion.enums.EnumException;
+import br.com.emerion.enums.EnumExceptionSeverity;
 import br.com.emerion.enums.EnumTipoVersao;
 import br.com.emerion.exception.ValidationExceptionWithErrors;
 import br.com.emerion.model.ExceptionModel;
 import br.com.emerion.service.ExceptionModelService;
+import io.swagger.annotations.ApiOperation;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -36,6 +37,7 @@ public class ExceptionController {
 	@Autowired
 	private ExceptionModelService service;
 
+	@ApiOperation(value = "Recuperar todas as excecoes cadastradas no sistema.")
 	@GetMapping(path = "/all")
 	public List<ExceptionModel> getAll() {
 		return service.getAll();
@@ -44,36 +46,6 @@ public class ExceptionController {
 	@GetMapping(path = "/filter/byField/id/{id}")
 	public ExceptionModel getById(@PathVariable("id") Integer id) {
 		return service.getExceptionById(id);
-	}
-
-	@GetMapping(path = "/filter/byField/unit_name/{unitName}")
-	public List<ExceptionModel> getByUnit(@PathVariable("unitName") String unitName) {
-		return service.getExceptionByUnitName(unitName);
-	}
-
-	@GetMapping(path = "/filter/byField/class_name/{className}")
-	public List<ExceptionModel> getByClass(@PathVariable("className") String className) {
-		return service.getExceptionByClassName(className);
-	}
-
-	@GetMapping(path = "/filter/byField/component_name/{componentName}")
-	public List<ExceptionModel> getByComponent(@PathVariable("componentName") String componentName) {
-		return service.getExceptionByComponentName(componentName);
-	}
-
-	@GetMapping(path = "/filter/byField/important_line/{importantLine}")
-	public List<ExceptionModel> getByImportantLine(@PathVariable("importantLine") String importantLine) {
-		return service.getExceptionByImportantLine(importantLine);
-	}
-
-	@GetMapping(path = "/filter/byField/detail/{detail}")
-	public List<ExceptionModel> getByDetail(@PathVariable("detail") String detail) {
-		return service.getExceptionByDetail(detail);
-	}
-
-	@GetMapping(path = "/filter/byField/version_name/{versionName}")
-	public List<ExceptionModel> getByVersionName(@PathVariable("versionName") String versionName) {
-		return service.getExceptionByVersionName(versionName);
 	}
 
 	@GetMapping(path = "/filter/general", consumes = "application/json")
@@ -104,49 +76,43 @@ public class ExceptionController {
 	}
 
 	@PostMapping(path = "/add")
-	public ResponseEntity<String> addNew(@RequestParam Map<String, Object> allRequestParams) throws IOException {
+	@ApiOperation(value = "Adicionar nova excecao no sistema")
+	public ResponseEntity<String> addNew(
+			@RequestParam("message") String message,
+			@RequestParam("stack_trace") String stackTrace, 
+			@RequestParam("application") Optional<UUID> application,
+			@RequestParam("user_name") Optional<String> userName,
+			@RequestParam("tipo_versao") Optional<String> tipoVersao,
+			@RequestParam("campo_controle") Optional<String> campoControle,
+			@RequestParam("class_excecao") Optional<String> classExcecao,
+			@RequestParam("numerp_versao") Optional<String> numeroVersao,
+			@RequestParam("severity") Optional<String> severity, 
+			@RequestParam("wiki_how") Optional<String> wikiHow)
+			throws IOException {
 
 		ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
 		mapper.configure(com.fasterxml.jackson.core.JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARS, true);
 
 		ExceptionModel exceptionModel = new ExceptionModel();
 
-		if (StringUtils.isEmpty(allRequestParams.get("message"))) {
-			throw new ValidationExceptionWithErrors(EnumException.MESSAGE_FIELD_NOT_INFORMED);
-		} else {
-			exceptionModel.setMessage(allRequestParams.get("message").toString());
+		exceptionModel.setMessage(message);
+		exceptionModel.setStackTrace(stackTrace);
+
+		if (application.isPresent()) {
+			exceptionModel.setAplicacao(application.get());
 		}
 
-		if (StringUtils.isEmpty(allRequestParams.get("stack_trace"))) {
-			throw new ValidationExceptionWithErrors(EnumException.STACKTRACE_FIELD_NOT_INFORMED);
-		} else {
-			exceptionModel.setStackTrace(allRequestParams.get("stack_trace").toString());
+		if (userName.isPresent()) {
+			exceptionModel.setUserName(userName.get());
 		}
 
-		if (StringUtils.isEmpty(allRequestParams.get("application"))) {
-			throw new ValidationExceptionWithErrors(EnumException.UUID_FIELD_NOT_INFORMED);
-		} else {
-			try {
-				UUID.fromString(allRequestParams.get("application").toString());
-			} catch (Exception ex) {
-				throw new ValidationExceptionWithErrors(EnumException.UUID_MALFORMED);
-			}
-			exceptionModel.setAplicacao(UUID.fromString(allRequestParams.get("application").toString()));
-		}
+		if (tipoVersao.isPresent()) {
 
-		if (StringUtils.isEmpty(allRequestParams.get("user_name"))) {
-			throw new ValidationExceptionWithErrors(EnumException.USER_NAME_FIELD_NOT_INFORMED);
-		} else {
-			exceptionModel.setUserName(allRequestParams.get("user_name").toString());
-		}
-
-		if (StringUtils.isEmpty(allRequestParams.get("tipo_versao"))) {
-			throw new ValidationExceptionWithErrors(EnumException.VERSION_TYPE_FIELD_NOT_INFORMED);
-		} else {
-			exceptionModel.setVersionType(allRequestParams.get("tipo_versao").toString());
+			exceptionModel.setVersionType(tipoVersao.get());
 			boolean existe = false;
 			for (EnumTipoVersao tv : EnumTipoVersao.values()) {
-				if (tv.toString().equals(allRequestParams.get("tipo_versao").toString())) {
+				if (tv.toString().equals(tipoVersao.get())) {
 					existe = true;
 					break;
 				}
@@ -154,6 +120,32 @@ public class ExceptionController {
 			if (!existe) {
 				throw new ValidationExceptionWithErrors(EnumException.VERSION_TYPE_NOT_VALID);
 			}
+		}
+		
+		if(campoControle.isPresent()) {
+			exceptionModel.setCampoControle(campoControle.get());
+		}
+		if(classExcecao.isPresent()) {
+			exceptionModel.setClassExcecao(classExcecao.get());
+		}
+		if(numeroVersao.isPresent()) {
+			exceptionModel.setNumerVersao(numeroVersao.get());
+		}
+		if(severity.isPresent()) {
+			exceptionModel.setServerity(severity.get());
+			boolean existe = false;
+			for (EnumExceptionSeverity tv : EnumExceptionSeverity.values()) {
+				if (tv.toString().equals(severity.get())) {
+					existe = true;
+					break;
+				}
+			}
+			if (!existe) {
+				throw new ValidationExceptionWithErrors(EnumException.EXCEPTION_SEVERITY);
+			}
+		}
+		if(wikiHow.isPresent()) {
+			exceptionModel.setWikiHow(wikiHow.get());
 		}
 
 		try {

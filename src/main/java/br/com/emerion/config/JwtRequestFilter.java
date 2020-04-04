@@ -49,7 +49,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws ServletException, IOException {
 
-		final String requestTokenHeader = request.getHeader("Authorization");
+		/*final String requestTokenHeader = request.getHeader("Authorization");
 
 		String jwtToken = null;
 
@@ -75,7 +75,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
 				SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
 			}
-		}
+		}*/
 
 		chain.doFilter(request, response);
 
