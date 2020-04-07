@@ -33,7 +33,7 @@ public class Application {
 	@ApiOperation(value = "Ping para resposta do Servidor")
 	@GetMapping(path = "/ping")
 	public String ping() {
-		return "ok.";
+		return "ok";
 	}
 
 	@Controller
