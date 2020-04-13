@@ -172,9 +172,14 @@ public class ExceptionController {
 		return new ResponseEntity<String>("{ \"message\" : \"Registro salvo com Sucesso\"}", HttpStatus.OK);
 	}
 
-	@GetMapping(value = "getGrouppedByMonth/{exceptionType}")
-	public List<GraphModel> getGrouppedByMonth(@PathVariable("exceptionType") String exceptionType) {
-		List<GraphModel> grouppedByWeek = this.service.getGrouppedByWeek(exceptionType);
+	@GetMapping(value = "getGrouppedByMonth/{application}/{exceptionType}")
+	public List<GraphModel> getGrouppedByMonth(@PathVariable("application") String application, @PathVariable("exceptionType") String exceptionType) {
+		try {
+			UUID.fromString(application);
+		} catch (Exception ex) {
+			return new ArrayList<>();
+		}
+		List<GraphModel> grouppedByWeek = this.service.getGrouppedByWeek(application, exceptionType);
 		List<GraphModel> grouppedByWeekOrganized = new ArrayList<>();
 
 		int mesAnt = -1;
@@ -183,7 +188,7 @@ public class ExceptionController {
 				mesAnt = g.getMonth();
 			}
 			if ((g.getMonth() - mesAnt) > 1) {
-				grouppedByWeekOrganized.add(new GraphModel(g.getYear(), g.getMonth() - 1, 0, 0));
+				grouppedByWeekOrganized.add(new GraphModel(g.getYear(), g.getWeek(), g.getMonth() - 1, 0, 0));
 			}
 			grouppedByWeekOrganized.add(g);
 			mesAnt = g.getMonth();
@@ -219,7 +224,7 @@ public class ExceptionController {
 		List<String> typesByMonth = this.service.getAllExceptionTypesByMonth(application, typeLimit);
 		List<GraphByMonth> graphByMonthList = new ArrayList<GraphByMonth>();
 		for (String s : typesByMonth) {
-			graphByMonthList.add(new GraphByMonth(s, this.getGrouppedByMonth(s)));
+			graphByMonthList.add(new GraphByMonth(s, this.getGrouppedByMonth(application, s)));
 		}
 
 		int maior = 0;
@@ -234,7 +239,7 @@ public class ExceptionController {
 		for (GraphByMonth g : graphByMonthList) {
 			if (g.getGraphModelList().size() == 1) {
 				GraphModel gm = g.getGraphModelList().get(0);
-				g.getGraphModelList().add(0, new GraphModel(gm.getYear(), gm.getMonth(), 1, 0));
+				g.getGraphModelList().add(0, new GraphModel(gm.getYear(), gm.getMonth(), gm.getWeek(), 1, 0));
 			}  {
 				if (g.getGraphModelList().size() < maior) {
 					for (GraphModel mMaior : graphModelListMaior) {
@@ -245,7 +250,7 @@ public class ExceptionController {
 							}
 						}
 						if(!possui) {							
-							g.getGraphModelList().add(new GraphModel(mMaior.getYear(), mMaior.getMonth(), mMaior.getDay(), 0));
+							g.getGraphModelList().add(new GraphModel(mMaior.getYear(), mMaior.getMonth(), mMaior.getWeek(), mMaior.getDay(), 0));
 						}
 					}
 				}
@@ -306,8 +311,7 @@ public class ExceptionController {
 			"VerifyError", 
 			"VirtualMachineError"));
 	
-	List<String> listaExcecoesReduzida = new ArrayList<>(Arrays.asList(
-			"ArrayIndexOutOfBoundsException", 
+	List<String> listaExcecoesReduzida = new ArrayList<>(Arrays.asList( 
 			"ArithmeticException",
 			"ArrayStoreException", 
 			"ClassCastException"));

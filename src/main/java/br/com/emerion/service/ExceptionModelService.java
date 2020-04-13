@@ -95,10 +95,12 @@ public class ExceptionModelService {
 		return query.getResultList();
 	}
 
-	public List<GraphModel> getGrouppedByWeek(String exceptionType) {
+	public List<GraphModel> getGrouppedByWeek(String application, String exceptionType) {
 		String sql = "select cast(date_part('year', cast(data_excecao as date)) as int) as year,"
 				+ "      cast(date_part('month', cast(data_excecao as date)) as int) as month, cast(count(1) as int) from asoft.exception_management em where em.classe_excecao = '"
-				+ exceptionType + "'" + " GROUP BY year, month " + " order BY year, month ";
+				+ exceptionType + "'"
+				+ " and aplicacao = '" + application + "' "
+				+ " GROUP BY year, month " + " order BY year, month ";
 
 		Query grouppedByMonth = this.manager.createNativeQuery(sql).unwrap(NativeQuery.class)
 				.setResultTransformer(Transformers.aliasToBean(GraphModel.class));
@@ -137,6 +139,7 @@ public class ExceptionModelService {
 				+ "	and date_part('week', cast(data_excecao as date)) >= date_part('week', cast(now() as date))-"
 				+ ((timePast > 0) ? timePast : "0")
 				+ ((exceptionType != null) ? " and em.classe_excecao = '" + exceptionType + "' " : "")
+				+ " and cast(data_excecao as date) <= cast(now() as date) "
 				+ " group by classe_excecao, year, month, day";
 		Query grouppedByMonth = this.manager.createNativeQuery(sql).unwrap(NativeQuery.class)
 				.setResultTransformer(Transformers.aliasToBean(GraphModel.class));

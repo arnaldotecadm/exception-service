@@ -12,6 +12,7 @@ import lombok.Setter;
 public class GraphModel {
 	private int year;
 	private int month;
+	private int week;
 	private int day;
 	private int count;
 }
