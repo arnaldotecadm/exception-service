@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
 import br.com.emerion.model.ExceptionModel;
 
-public interface ExceptionRepository extends CrudRepository<ExceptionModel, Integer> {
+public interface ExceptionRepository extends PagingAndSortingRepository<ExceptionModel, Integer> {
 
 	@Query(value = "select e.* from exception_management e where e.unit_name ilike %?1%", nativeQuery = true)
 	List<ExceptionModel> findExceptionByUnitName(String unitName);
@@ -33,4 +33,5 @@ public interface ExceptionRepository extends CrudRepository<ExceptionModel, Inte
 
 	@Query(value = "select e.* from exception_management e where e.tipo_versao ilike %?1%", nativeQuery = true)
 	List<ExceptionModel> findExceptionByVersionType(String tipoVersao);
+
 }
