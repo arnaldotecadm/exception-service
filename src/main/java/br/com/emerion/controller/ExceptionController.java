@@ -194,6 +194,13 @@ public class ExceptionController {
 			mesAnt = g.getMonth();
 		}
 
+		if(grouppedByWeekOrganized.size() == 1) {
+			GraphModel model = grouppedByWeekOrganized.get(0);
+			int ano = model.getMonth() > 1 ? model.getYear() : model.getYear() - 1;
+			int mes = model.getMonth() > 1 ? model.getMonth() - 1 : 12;
+			
+			grouppedByWeekOrganized.add(0, new GraphModel(ano, mes, 0, 0, 0));
+		}
 		return grouppedByWeekOrganized;
 	}
 
