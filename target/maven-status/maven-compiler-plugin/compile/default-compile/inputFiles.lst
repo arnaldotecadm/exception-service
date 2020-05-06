@@ -9,8 +9,6 @@
 /common-files/storage/dev-tools/eclipse_workspace/exception-service/src/main/java/br/com/emerion/model/GraphGRouppedByType.java
 /common-files/storage/dev-tools/eclipse_workspace/exception-service/src/main/java/br/com/emerion/Application.java
 /common-files/storage/dev-tools/eclipse_workspace/exception-service/src/main/java/br/com/emerion/exception/ValidationException.java
-/common-files/storage/dev-tools/eclipse_workspace/exception-service/src/main/java/br/com/emerion/model/DTO/ExceptionDTO.java
-/common-files/storage/dev-tools/eclipse_workspace/exception-service/src/main/java/br/com/emerion/util/BooleanUtil.java
 /common-files/storage/dev-tools/eclipse_workspace/exception-service/src/main/java/br/com/emerion/controller/AuthController.java
 /common-files/storage/dev-tools/eclipse_workspace/exception-service/src/main/java/br/com/emerion/exception/ServiceException.java
 /common-files/storage/dev-tools/eclipse_workspace/exception-service/src/main/java/br/com/emerion/model/ExceptionSummary.java
@@ -23,6 +21,7 @@
 /common-files/storage/dev-tools/eclipse_workspace/exception-service/src/main/java/br/com/emerion/config/JwtAuthenticationEntryPoint.java
 /common-files/storage/dev-tools/eclipse_workspace/exception-service/src/main/java/br/com/emerion/enums/EnumVersionException.java
 /common-files/storage/dev-tools/eclipse_workspace/exception-service/src/main/java/br/com/emerion/repository/ExceptionRepository.java
+/common-files/storage/dev-tools/eclipse_workspace/exception-service/src/main/java/br/com/emerion/model/dto/ExceptionDto.java
 /common-files/storage/dev-tools/eclipse_workspace/exception-service/src/main/java/br/com/emerion/model/GraphByMonth.java
 /common-files/storage/dev-tools/eclipse_workspace/exception-service/src/main/java/br/com/emerion/exception/MethodNotImplemented.java
 /common-files/storage/dev-tools/eclipse_workspace/exception-service/src/main/java/br/com/emerion/config/WebSecurityConfig.java

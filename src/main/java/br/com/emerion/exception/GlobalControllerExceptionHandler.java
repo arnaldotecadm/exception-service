@@ -48,7 +48,7 @@ public class GlobalControllerExceptionHandler {
 	
 	@ExceptionHandler({ MissingServletRequestParameterException.class })
 	@ResponseBody
-	public ResponseEntity<?> handleMissingparameterException(MissingServletRequestParameterException ve) {
+	public ResponseEntity<Object> handleMissingparameterException(MissingServletRequestParameterException ve) {
 		logger.error(ve.getMessage());
 		logger.error(ve);
 		return new ResponseEntity<>(

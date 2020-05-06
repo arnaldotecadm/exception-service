@@ -3,7 +3,6 @@ package br.com.emerion.controller;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,30 +31,15 @@ import okhttp3.Response;
 @RestController()
 @RequestMapping(path = "/auth")
 public class AuthController {
-	
+
 	@Value("${user_webservice.host}")
 	private String host;
-	
+
 	@Value("${user_webservice.port}")
 	private String port;
-	
+
 	@Value("${user_webservice.context}")
 	private String context;
-	
-	public static void main(String[] args) throws IOException {
-		ResponseEntity<String> authResponse = new AuthController()
-				.post("http://localhost:8080/user-management/authenticate", 
-						new Gson().toJson(new IdentificacaoUsuario("javainuse", "password","")));
-		
-		String body = authResponse.getBody();
-		if(authResponse.getStatusCodeValue() == 200) {
-			JSONObject jsonObject = new JSONObject(body);
-			System.out.println("Valor do Token: " + jsonObject.getString("token"));
-		} else {
-			System.out.println("A requisição não foi bem sucedida!!!");
-			System.out.println(body);
-		}
-	}
 
 	public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
 
@@ -72,9 +56,8 @@ public class AuthController {
 			@RequestParam("password") String password, @RequestParam("publicKey") String publicKey)
 			throws NoSuchAlgorithmException, IOException {
 
-		return new AuthController()
-				.post(this.host + ":" + this.port + "/" + this.context + "/authenticate", 
-						new Gson().toJson(new IdentificacaoUsuario(userName, password,"")));
+		return new AuthController().post(this.host + ":" + this.port + "/" + this.context + "/authenticate",
+				new Gson().toJson(new IdentificacaoUsuario(userName, password, "")));
 	}
 
 	ResponseEntity<String> post(String url, String json) throws IOException {
@@ -82,7 +65,7 @@ public class AuthController {
 		RequestBody body = RequestBody.create(json, JSON);
 		Request request = new Request.Builder().url(url).post(body).build();
 		try (Response response = client.newCall(request).execute()) {
-			return new ResponseEntity<String>(response.body().string(), HttpStatus.resolve(response.code()));
+			return new ResponseEntity<>(response.body().string(), HttpStatus.resolve(response.code()));
 		}
 	}
 

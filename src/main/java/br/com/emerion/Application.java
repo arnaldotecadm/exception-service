@@ -7,7 +7,6 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.emerion.model.ExceptionModel;
@@ -40,7 +39,7 @@ public class Application {
 
 	@Controller
 	class SwaggerWelcome {
-		@RequestMapping("/documentacao")
+		@GetMapping("/documentacao")
 		public String redirectToUi() {
 			return "redirect:/swagger-ui.html";
 		}

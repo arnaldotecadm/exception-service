@@ -10,6 +10,8 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -26,9 +28,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.emerion.enums.EnumException;
@@ -40,6 +39,7 @@ import br.com.emerion.model.ExceptionSummary;
 import br.com.emerion.model.GraphByMonth;
 import br.com.emerion.model.GraphGRouppedByType;
 import br.com.emerion.model.GraphModel;
+import br.com.emerion.model.StringResponse;
 import br.com.emerion.service.ExceptionModelService;
 import io.swagger.annotations.ApiOperation;
 import okhttp3.OkHttpClient;
@@ -50,6 +50,8 @@ import okhttp3.Response;
 @CrossOrigin(origins = "*")
 @RequestMapping()
 public class ExceptionController {
+
+	private Log logger = LogFactory.getLog(ExceptionController.class);
 
 	@Autowired
 	private ExceptionModelService service;
@@ -67,9 +69,8 @@ public class ExceptionController {
 	}
 
 	@GetMapping(path = "/filter/general", consumes = "application/json")
-	public List<ExceptionModel> getByGeneralFields(@RequestParam("object") String json)
-			throws JsonParseException, JsonMappingException, IOException {
-		ExceptionModel model = new ExceptionModel();
+	public List<ExceptionModel> getByGeneralFields(@RequestParam("object") String json) throws IOException {
+		ExceptionModel model = null;
 		ObjectMapper mapper = new ObjectMapper();
 		model = mapper.readValue(json, ExceptionModel.class);
 
@@ -83,7 +84,7 @@ public class ExceptionController {
 			UUID uuid = UUID.fromString(aplicacao);
 			return service.getExceptionByAplicacao(uuid);
 		} catch (Exception e) {
-			return null;
+			return new ArrayList<>();
 		}
 
 	}
@@ -95,19 +96,14 @@ public class ExceptionController {
 
 	@PostMapping(path = "/add")
 	@ApiOperation(value = "Adicionar nova excecao no sistema")
-	public ResponseEntity<String> addNew(@RequestParam("message") String message,
+	public ResponseEntity<StringResponse> addNew(@RequestParam("message") String message,
 			@RequestParam("stack_trace") String stackTrace, @RequestParam("application") Optional<UUID> application,
 			@RequestParam("user_name") Optional<String> userName,
 			@RequestParam("tipo_versao") Optional<String> tipoVersao,
 			@RequestParam("campo_controle") Optional<String> campoControle,
 			@RequestParam("class_excecao") Optional<String> classExcecao,
 			@RequestParam("numerp_versao") Optional<String> numeroVersao,
-			@RequestParam("severity") Optional<String> severity, @RequestParam("wiki_how") Optional<String> wikiHow)
-			throws IOException {
-
-		ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
-		mapper.configure(com.fasterxml.jackson.core.JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARS, true);
+			@RequestParam("severity") Optional<String> severity, @RequestParam("wiki_how") Optional<String> wikiHow) {
 
 		ExceptionModel exceptionModel = new ExceptionModel();
 
@@ -169,11 +165,12 @@ public class ExceptionController {
 			throw new ValidationExceptionWithErrors(EnumException.UNKNOWN_ERROR);
 		}
 
-		return new ResponseEntity<String>("{ \"message\" : \"Registro salvo com Sucesso\"}", HttpStatus.OK);
+		return new ResponseEntity<>(new StringResponse("Registro salvo com Sucesso"), HttpStatus.OK);
 	}
 
 	@GetMapping(value = "getGrouppedByMonth/{application}/{exceptionType}")
-	public List<GraphModel> getGrouppedByMonth(@PathVariable("application") String application, @PathVariable("exceptionType") String exceptionType) {
+	public List<GraphModel> getGrouppedByMonth(@PathVariable("application") String application,
+			@PathVariable("exceptionType") String exceptionType) {
 		try {
 			UUID.fromString(application);
 		} catch (Exception ex) {
@@ -194,11 +191,11 @@ public class ExceptionController {
 			mesAnt = g.getMonth();
 		}
 
-		if(grouppedByWeekOrganized.size() == 1) {
+		if (grouppedByWeekOrganized.size() == 1) {
 			GraphModel model = grouppedByWeekOrganized.get(0);
 			int ano = model.getMonth() > 1 ? model.getYear() : model.getYear() - 1;
 			int mes = model.getMonth() > 1 ? model.getMonth() - 1 : 12;
-			
+
 			grouppedByWeekOrganized.add(0, new GraphModel(ano, mes, 0, 0, 0));
 		}
 		return grouppedByWeekOrganized;
@@ -229,7 +226,7 @@ public class ExceptionController {
 			return new ArrayList<>();
 		}
 		List<String> typesByMonth = this.service.getAllExceptionTypesByMonth(application, typeLimit);
-		List<GraphByMonth> graphByMonthList = new ArrayList<GraphByMonth>();
+		List<GraphByMonth> graphByMonthList = new ArrayList<>();
 		for (String s : typesByMonth) {
 			graphByMonthList.add(new GraphByMonth(s, this.getGrouppedByMonth(application, s)));
 		}
@@ -247,24 +244,29 @@ public class ExceptionController {
 			if (g.getGraphModelList().size() == 1) {
 				GraphModel gm = g.getGraphModelList().get(0);
 				g.getGraphModelList().add(0, new GraphModel(gm.getYear(), gm.getMonth(), gm.getWeek(), 1, 0));
-			}  {
-				if (g.getGraphModelList().size() < maior) {
-					for (GraphModel mMaior : graphModelListMaior) {
-						boolean possui = false;
-						for(GraphModel gm2 : g.getGraphModelList()) {
-							if(gm2.getMonth() == mMaior.getMonth()) {
-								possui = true;
-							}
-						}
-						if(!possui) {							
-							g.getGraphModelList().add(new GraphModel(mMaior.getYear(), mMaior.getMonth(), mMaior.getWeek(), mMaior.getDay(), 0));
-						}
-					}
-				}
+			}
+
+			if (g.getGraphModelList().size() < maior) {
+				processadadosGrafico(graphModelListMaior, g);
 			}
 		}
 
 		return graphByMonthList;
+	}
+
+	private void processadadosGrafico(List<GraphModel> graphModelListMaior, GraphByMonth g) {
+		for (GraphModel mMaior : graphModelListMaior) {
+			boolean possui = false;
+			for (GraphModel gm2 : g.getGraphModelList()) {
+				if (gm2.getMonth() == mMaior.getMonth()) {
+					possui = true;
+				}
+			}
+			if (!possui) {
+				g.getGraphModelList()
+						.add(new GraphModel(mMaior.getYear(), mMaior.getMonth(), mMaior.getWeek(), mMaior.getDay(), 0));
+			}
+		}
 	}
 
 	@GetMapping(value = "top-trend-exception-name/{application}/{timePast}")
@@ -290,80 +292,52 @@ public class ExceptionController {
 
 		List<String> topTrend = this.service.getTopTrendExceptionName(application, timePast);
 
-		List<GraphByMonth> graphByMonthList = new ArrayList<GraphByMonth>();
+		List<GraphByMonth> graphByMonthList = new ArrayList<>();
 		for (String s : topTrend) {
-			graphByMonthList.add(new GraphByMonth(s, this.service.getTopTrendExceptionDetail(application, timePast, s)));
+			graphByMonthList
+					.add(new GraphByMonth(s, this.service.getTopTrendExceptionDetail(application, timePast, s)));
 		}
 
 		return graphByMonthList;
 	}
 
-	List<String> listaExcecoesCompleta = new ArrayList<>(Arrays.asList(
-			"ArrayIndexOutOfBoundsException", 
-			"ArithmeticException",
-			"ArrayStoreException", 
-			"ClassCastException", 
-			"IllegalArgumentException", 
-			"IllegalMonitorStateException",
-			"ClassNotFoundException", 
-			"CloneNotSupportedException", 
-			"IllegalAccessException", 
-			"InstantiationException",
-			"AbstractMethodError", 
-			"NoSuchFieldError", 
-			"StackOverflowError", 
-			"ThreadDeath", 
-			"UnknownError",
-			"UnsatisfiedLinkError", 
-			"VerifyError", 
-			"VirtualMachineError"));
-	
-	List<String> listaExcecoesReduzida = new ArrayList<>(Arrays.asList( 
-			"ArithmeticException",
-			"ArrayStoreException", 
-			"ClassCastException"));
+	List<String> listaExcecoesCompleta = new ArrayList<>(
+			Arrays.asList("ArrayIndexOutOfBoundsException", "ArithmeticException", "ArrayStoreException",
+					"ClassCastException", "IllegalArgumentException", "IllegalMonitorStateException",
+					"ClassNotFoundException", "CloneNotSupportedException", "IllegalAccessException",
+					"InstantiationException", "AbstractMethodError", "NoSuchFieldError", "StackOverflowError",
+					"ThreadDeath", "UnknownError", "UnsatisfiedLinkError", "VerifyError", "VirtualMachineError"));
+
+	List<String> listaExcecoesReduzida = new ArrayList<>(
+			Arrays.asList("ArithmeticException", "ArrayStoreException", "ClassCastException"));
 
 	@PostMapping(value = "/generateData")
-	ResponseEntity<String> gerarMassaDados(
-			@RequestParam("usa_web_service") Boolean usaWebService,
-			@RequestParam("data_inicial") Date dataInicialLong,
-			@RequestParam("data_final") Date dataFinalLong,
-			@RequestParam("qtd_registros") int qtdRegistros,
-			@RequestParam("application") String application,
-			@RequestParam("lista_exceptions_simples") Boolean tipoListaSimples
-			) throws IOException {
+	public ResponseEntity<String> gerarMassaDados(@RequestParam("usa_web_service") boolean usaWebService,
+			@RequestParam("data_inicial") Date dataInicialLong, @RequestParam("data_final") Date dataFinalLong,
+			@RequestParam("qtd_registros") int qtdRegistros, @RequestParam("application") String application,
+			@RequestParam("lista_exceptions_simples") boolean tipoListaSimples) throws IOException {
 
 		List<String> listagem = (tipoListaSimples) ? listaExcecoesReduzida : listaExcecoesCompleta;
-		
+
 		for (int i = 0; i < qtdRegistros; i++) {
-			
+
 			int randomNum = ThreadLocalRandom.current().nextInt(0, listagem.size());
 
 			Calendar calendar = Calendar.getInstance();
 
-			calendar.setTime(new Date(ThreadLocalRandom.current().nextLong(dataInicialLong.getTime(), dataFinalLong.getTime())));
+			calendar.setTime(
+					new Date(ThreadLocalRandom.current().nextLong(dataInicialLong.getTime(), dataFinalLong.getTime())));
 
-			ExceptionModel exceptionModel = 
-					new ExceptionModel(
-							null, 
-							(usaWebService) ? post(5, 45) : "",
-							(usaWebService) ? post(50, 125) : "", 
-							UUID.fromString(application),
-							"DESENVOLVIMENTO", 
-							"1.1.0", 
-							"", 
-							listagem.get(randomNum), 
-							"Não Possui", 
-							"ERROR", 
-							calendar, 
-							"");
+			ExceptionModel exceptionModel = new ExceptionModel(null, (usaWebService) ? post(5, 45) : "",
+					(usaWebService) ? post(50, 125) : "", UUID.fromString(application), "DESENVOLVIMENTO", "1.1.0", "",
+					listagem.get(randomNum), "Não Possui", "ERROR", calendar, "");
 
 			this.service.save(exceptionModel);
 
-			System.out.println(String.format("Exceção de Nº%d salva com sucesso", i + 1));
+			logger.info(String.format("Exceção de Nº%d salva com sucesso", i + 1));
 		}
 
-		return new ResponseEntity<String>("Massa de Dados Gerada com Sucesso!", HttpStatus.OK);
+		return new ResponseEntity<>("Massa de Dados Gerada com Sucesso!", HttpStatus.OK);
 
 	}
 

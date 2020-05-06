@@ -23,6 +23,10 @@ import br.com.emerion.repository.ExceptionRepository;
 @Service
 public class ExceptionModelService {
 
+	private static final String AND_APLICACAO = " and aplicacao = ";
+
+	private static final String WHERE_1_1 = " where 1 = 1 ";
+
 	@Autowired
 	private ExceptionRepository repository;
 
@@ -76,7 +80,7 @@ public class ExceptionModelService {
 	public List<ExceptionModel> getExceptionByGeneralFilter(ExceptionModel model) {
 		StringBuilder sql = new StringBuilder();
 		sql.append(" select * from exception_management");
-		sql.append(" where 1 = 1 ");
+		sql.append(WHERE_1_1);
 
 		if (model.getId() != null) {
 			sql.append(" and id = " + model.getId());
@@ -98,26 +102,25 @@ public class ExceptionModelService {
 	public List<GraphModel> getGrouppedByWeek(String application, String exceptionType) {
 		String sql = "select cast(date_part('year', cast(data_excecao as date)) as int) as year,"
 				+ "      cast(date_part('month', cast(data_excecao as date)) as int) as month, cast(count(1) as int) from asoft.exception_management em where em.classe_excecao = '"
-				+ exceptionType + "'"
-				+ " and aplicacao = '" + application + "' "
-				+ " GROUP BY year, month " + " order BY year, month ";
+				+ exceptionType + "'" + " and aplicacao = '" + application + "' " + " GROUP BY year, month "
+				+ " order BY year, month ";
 
 		Query grouppedByMonth = this.manager.createNativeQuery(sql).unwrap(NativeQuery.class)
 				.setResultTransformer(Transformers.aliasToBean(GraphModel.class));
 
-		return (List<GraphModel>) grouppedByMonth.getResultList();
+		return grouppedByMonth.getResultList();
 	}
 
 	public List<String> getTopTrendExceptionName(String application, int timePast) {
-		String sql = " select classe_excecao,  count(1)  from asoft.exception_management em " + " where 1 = 1 "
-				+ " and aplicacao = '" + application + "' "
+		final String sql = " select classe_excecao,  count(1)  from asoft.exception_management em " + WHERE_1_1
+				+ AND_APLICACAO + "'" + application + "' "
 				+ "	 and date_part('year', cast(data_excecao as date)) = date_part('year', cast(now() as date)) "
 				+ "	 and date_part('week', cast(data_excecao as date)) >= date_part('week', cast(now() as date)) - "
 				+ ((timePast > 0) ? timePast : "0") + " group by classe_excecao";
 
 		Query grouppedByMonth = this.manager.createNativeQuery(sql);
 
-		List<String> exceptionTypes = new ArrayList<String>();
+		List<String> exceptionTypes = new ArrayList<>();
 		List<?> resultList = grouppedByMonth.getResultList();
 
 		if (resultList != null) {
@@ -130,11 +133,11 @@ public class ExceptionModelService {
 	}
 
 	public List<GraphModel> getTopTrendExceptionDetail(String application, int timePast, String exceptionType) {
-		String sql = "select " + "	   cast(date_part('year', cast(data_excecao as date)) as int) as year, "
+		final String sql = "select " + "	   cast(date_part('year', cast(data_excecao as date)) as int) as year, "
 				+ "	   cast(date_part('month', cast(data_excecao as date)) as int) as month, "
 				+ "	   cast(date_part('day', cast(data_excecao as date)) as int) as day, "
-				+ "	   cast(count(1) as int) " + " from asoft.exception_management em " + " where 1 = 1 "
-				+ " and aplicacao = '" + application + "' "
+				+ "	   cast(count(1) as int) " + " from asoft.exception_management em " + WHERE_1_1 + AND_APLICACAO
+				+ "'" + application + "' "
 				+ "	and date_part('year', cast(data_excecao as date)) = date_part('year', cast(now() as date))"
 				+ "	and date_part('week', cast(data_excecao as date)) >= date_part('week', cast(now() as date))-"
 				+ ((timePast > 0) ? timePast : "0")
@@ -144,15 +147,14 @@ public class ExceptionModelService {
 		Query grouppedByMonth = this.manager.createNativeQuery(sql).unwrap(NativeQuery.class)
 				.setResultTransformer(Transformers.aliasToBean(GraphModel.class));
 
-		return (List<GraphModel>) grouppedByMonth.getResultList();
+		return grouppedByMonth.getResultList();
 	}
 
 	public List<GraphGRouppedByType> getPercentageException(String application) {
 		List<GraphGRouppedByType> lista = new ArrayList<>();
 
-		String sql = " select classe_excecao, count(1) from asoft.exception_management em "
-				+ " where aplicacao = '" + application + "' "
-				+ " group by classe_excecao " + " order by 2 desc ";
+		String sql = " select classe_excecao, count(1) from asoft.exception_management em " + WHERE_1_1 + AND_APLICACAO
+				+ "'" + application + "' " + " group by classe_excecao " + " order by 2 desc ";
 		Query query = this.manager.createNativeQuery(sql);
 		List<Object[]> resultList = query.getResultList();
 		if (resultList != null) {
@@ -166,9 +168,9 @@ public class ExceptionModelService {
 
 	public List<ExceptionSummary> getTotalException() {
 		List<ExceptionSummary> summarylist = new ArrayList<>();
-		String sql = " select cast(em.aplicacao as varchar),sum(1) from asoft.exception_management em group by em.aplicacao ";
+		final String sql = " select cast(em.aplicacao as varchar),sum(1) from asoft.exception_management em group by em.aplicacao ";
 		Query query = this.manager.createNativeQuery(sql);
-		List<Object[]> objList = (List<Object[]>) query.getResultList();
+		List<Object[]> objList = query.getResultList();
 		if (objList != null) {
 			for (Object[] obj : objList) {
 				summarylist.add(
@@ -180,13 +182,13 @@ public class ExceptionModelService {
 	}
 
 	public List<String> getAllExceptionTypesByMonth(String application, int typeLimit) {
-		String sql = "select classe_excecao, count(1) from asoft.exception_management em " + " where aplicacao = '"
-				+ application + "' " + " group by classe_excecao " + " order by 2 desc ";
+		String sql = "select classe_excecao, count(1) from asoft.exception_management em " + WHERE_1_1 + AND_APLICACAO
+				+ "'" + application + "' " + " group by classe_excecao " + " order by 2 desc ";
 		sql += typeLimit > 0 ? (" limit " + typeLimit) : "";
 
 		Query grouppedByMonth = this.manager.createNativeQuery(sql);
 
-		List<String> exceptionTypes = new ArrayList<String>();
+		List<String> exceptionTypes = new ArrayList<>();
 		List<?> resultList = grouppedByMonth.getResultList();
 
 		if (resultList != null) {

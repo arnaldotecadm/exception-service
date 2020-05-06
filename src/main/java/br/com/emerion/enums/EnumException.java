@@ -17,7 +17,9 @@ public enum EnumException {
 	EXCEPTION_SEVERITY(HttpStatus.FORBIDDEN, "Gravidade da exceção informada não é valido"),
 	STACKTRACE_FIELD_NOT_INFORMED(HttpStatus.FORBIDDEN, "Campo \"stack_trace\" não informado"),
 	MESSAGE_FIELD_NOT_INFORMED(HttpStatus.FORBIDDEN, "Campo \"message\" não informado"),
-	USER_NAME_FIELD_NOT_INFORMED(HttpStatus.FORBIDDEN, "Campo \"user_name\" não informado");
+	USER_NAME_FIELD_NOT_INFORMED(HttpStatus.FORBIDDEN, "Campo \"user_name\" não informado"),
+	
+	TOKEN_NOT_PROVIDED(HttpStatus.UNAUTHORIZED, "Token não informado na requisição");
 
 	private HttpStatus httpStatus;
 	private String description;

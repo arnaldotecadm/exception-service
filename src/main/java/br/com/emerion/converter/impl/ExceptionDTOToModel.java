@@ -4,13 +4,13 @@ import java.io.IOException;
 
 import br.com.emerion.converter.Conversor;
 import br.com.emerion.model.ExceptionModel;
-import br.com.emerion.model.DTO.ExceptionDTO;
+import br.com.emerion.model.dto.ExceptionDto;
 
-public class ExceptionDTOToModel implements Conversor<ExceptionModel, ExceptionDTO> {
+public class ExceptionDTOToModel implements Conversor<ExceptionModel, ExceptionDto> {
 
 	@Override
 	public ExceptionModel getModel(Object object) throws IOException {
-		ExceptionDTO exDTO = (ExceptionDTO) object;
+		ExceptionDto exDTO = (ExceptionDto) object;
 
 		ExceptionModel ex = new ExceptionModel();
 		ex.setStackTrace(exDTO.getStacktrace());
@@ -19,10 +19,10 @@ public class ExceptionDTOToModel implements Conversor<ExceptionModel, ExceptionD
 	}
 
 	@Override
-	public ExceptionDTO getDTO(Object object) throws IOException {
+	public ExceptionDto getDTO(Object object) throws IOException {
 		ExceptionModel exDTO = (ExceptionModel) object;
 
-		ExceptionDTO ex = new ExceptionDTO();
+		ExceptionDto ex = new ExceptionDto();
 		ex.setStacktrace(exDTO.getStackTrace());
 
 		return ex;

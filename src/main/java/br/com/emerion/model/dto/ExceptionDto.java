@@ -1,4 +1,4 @@
-package br.com.emerion.model.DTO;
+package br.com.emerion.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,7 +11,7 @@ import lombok.ToString;
 @ToString
 @Getter
 @Setter
-public class ExceptionDTO {
+public class ExceptionDto {
 	private Integer id;
 	private String unitname;
 	private String classname;
