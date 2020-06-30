@@ -47,7 +47,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 @RestController
-@CrossOrigin(origins = "*")
+@CrossOrigin()
 @RequestMapping()
 public class ExceptionController {
 
