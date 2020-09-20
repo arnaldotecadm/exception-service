@@ -37,10 +37,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
 
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
-		httpSecurity.csrf().disable().authorizeRequests().antMatchers("/documentacao/**").permitAll()
-				.antMatchers("/ping").permitAll().anyRequest().authenticated().and().exceptionHandling()
-				.authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
-				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+		httpSecurity
+		.csrf()
+		.disable()
+		.authorizeRequests()
+		.antMatchers("/documentacao/**")
+		.permitAll()
+		.antMatchers("/**")
+		.permitAll()
+		.anyRequest()
+		.authenticated()
+		.and()
+		.exceptionHandling()
+		.authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
+		.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
 		httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 		httpSecurity.cors();
